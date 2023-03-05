@@ -17,14 +17,22 @@ try:
         time.sleep(0.5)
         #get rotary value
         potentiometer_value = grovepi.analogRead(potentiometer_port)
-        # print(f"POT: {potentiometer_value}")
 
         #get ultrasonic value
         ultrasonic_value = grovepi.ultrasonicRead(ultrasonic_port)
-        # print(ultrasonic_value)
-    
+        
+
         if(ultrasonic_value > potentiometer_value):
             setRGB(0,255,0)
+            
+            '''
+            due to the purely additive nature of setText_norefresh,
+            when using setText_norefresh, a onetime reset for the screen when ultrasonic reading 
+            goes from 3 digits to 1 digit is neccesary so as to avoid the behaviour shown below:
+            'xxx cm'
+            'x cm m'
+            '''
+
             if(rst_flag or  (potentiometer_value == 0 and prev_pot_value != 0)):
                 rst_flag = 0
                 setText(f"{potentiometer_value}cm \n{ultrasonic_value}cm")
